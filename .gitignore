@@ -1,2 +1,6 @@
+# Basics
+*.py[cod]
+*.pyc
+
 # Pycharm files
 /.idea
