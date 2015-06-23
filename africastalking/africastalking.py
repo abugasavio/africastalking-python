@@ -13,11 +13,12 @@ class AfricasTalking(object):
         self.apikey = apikey
 
         self.airtime_url = 'https://api.africastalking.com/version1/airtime'
+        self.account_details_url = 'https://api.africastalking.com/version1/user'
 
     def send_airtime_url(self):
         return self.airtime_url + '/send'
 
-    def send_africastalking_request(self, url, data):
+    def send_africastalking_request(self, url, data=None):
         try:
             if data is not None:
                 data = urllib.urlencode(data)
@@ -43,4 +44,12 @@ class AfricasTalking(object):
             if len(response_data['responses']):
                 return response_data['responses']
             raise AfricasTalkingException(response_data['errorMessage'])
+        raise AfricasTalkingException(response)
+
+    def get_account_details(self):
+        url = self.account_details_url + '?' + urllib.urlencode({'username': self.username})
+        response = self.send_africastalking_request(url)
+        response_data = json.loads(response.read())
+        if response.getcode() == 200:
+            return response_data['UserData']
         raise AfricasTalkingException(response)
