@@ -11,12 +11,16 @@ class AfricasTalking(object):
     def __init__(self, username, apikey):
         self.username = username
         self.apikey = apikey
-
-        self.airtime_url = 'https://api.africastalking.com/version1/airtime'
-        self.account_details_url = 'https://api.africastalking.com/version1/user'
+        self.apiurl = 'https://api.africastalking.com/version1/'
 
     def send_airtime_url(self):
-        return self.airtime_url + '/send'
+        return self.apiurl + 'airtime/send'
+
+    def send_message_url(self):
+        return self.apiurl + 'messaging'
+
+    def account_details_url(self):
+        return self.apiurl + 'user'
 
     def send_africastalking_request(self, url, data=None):
         try:
@@ -44,6 +48,32 @@ class AfricasTalking(object):
             if len(response_data['responses']):
                 return response_data['responses']
             raise AfricasTalkingException(response_data['errorMessage'])
+        raise AfricasTalkingException(response)
+
+    def send_message(self, details):
+        if not details.get('to') or not details.get('message'):
+            AfricasTalkingException('to or message parameters are required.')
+        params = {'username': self.username, 'to': details['to'], 'message': details.get('message'), 'bulkSMSMode': 1}
+
+        if details.get('from'):
+            params['from'] = details.get('from')
+
+        if details.get('enqueue'):
+            params['enqueue'] = details.get('enqueue')
+
+        if details.get('keyword'):
+            params['keyword'] = details.get('keyword')
+
+        if details.get('link_id'):
+            params['linkId'] = details.get('link_id')
+
+        if details.get('retry_duration'):
+            params['retryDurationInHours'] = details.get('retry_duration')
+
+        response = self.send_africastalking_request(self.send_message_url(), params)
+        response_data = json.loads(response.read())
+        if response.getcode() == 201:
+            return response_data
         raise AfricasTalkingException(response)
 
     def get_account_details(self):

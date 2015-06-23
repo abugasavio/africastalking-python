@@ -4,14 +4,13 @@ from africastalking import AfricasTalking, AfricasTalkingException
 username = os.environ['AFRICASTALKING_USERNAME']
 apikey = os.environ['AFRICASTALKING_APIKEY']
 
-# Specify an array of dicts to hold the recipients and the amount to send
-recipients = [{'phoneNumber': '+254727843600', 'amount': 'KES 10'}]
-
 africastalking = AfricasTalking(username, apikey)
 
+details = {'to': '+254727843600', 'message': 'hi there!'}
+
+
 try:
-    responses = africastalking.send_airtime(recipients)
-    for response in responses:
-        print response
+    response = africastalking.send_message(details)
+    print response
 except AfricasTalkingException as e:
     print 'Encountered an error while sending airtime: %s' % str(e)

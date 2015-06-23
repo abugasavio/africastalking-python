@@ -4,7 +4,6 @@ from africastalking import AfricasTalking, AfricasTalkingException
 username = os.environ['AFRICASTALKING_USERNAME']
 apikey = os.environ['AFRICASTALKING_APIKEY']
 
-# Create a new  gateway class
 africastalking = AfricasTalking(username, apikey)
 
 try:
